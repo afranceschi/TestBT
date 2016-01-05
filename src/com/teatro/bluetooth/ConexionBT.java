@@ -46,7 +46,7 @@ public class ConexionBT{
 			@Override
 			public void Post() {
 				Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
-				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON);
+				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
 			}
 		}).Start();
 	

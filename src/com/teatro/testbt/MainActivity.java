@@ -43,14 +43,14 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	public void AccionBTN(View view){
-		final ConexionBT BT = new ConexionBT(this);
+		ConexionBT BT = new ConexionBT(this);
 		BT.SetBluetoothEvent(new ConexionBT_EVENTS() {
 			
 			@Override
-			public void BT_EVENT(int event) {
+			public void BT_EVENT(int event, boolean respuesta) {
 				// TODO Auto-generated method stub
 				if(event == ConexionBT_EVENTS.BT_ON){
-					if(BT.isEnabled()){
+					if(respuesta){
 						Toast.makeText(getApplicationContext(), "SI", Toast.LENGTH_SHORT).show();
 					}else{
 						Toast.makeText(getApplicationContext(), "NO", Toast.LENGTH_SHORT).show();
