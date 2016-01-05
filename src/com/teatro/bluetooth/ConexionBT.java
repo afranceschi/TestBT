@@ -16,10 +16,6 @@ import android.support.v7.app.WindowDecorActionBar.TabImpl;
 import android.widget.Toast;
 
 public class ConexionBT{
-
-	//EVENTOS BLUETOOTH
-	public static final int BT_ON = 1;
-	public static final int BT_OFF = 2;
 	
 	private Context CONTEXT;
 	private BluetoothAdapter BTADAPTER;
@@ -50,7 +46,7 @@ public class ConexionBT{
 			@Override
 			public void Post() {
 				Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
-				EVENTOS.BT_EVENT(ConexionBT.BT_ON);
+				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON);
 			}
 		}).Start();
 	

@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void BT_EVENT(int event) {
 				// TODO Auto-generated method stub
-				if(event == ConexionBT.BT_ON){
+				if(event == ConexionBT_EVENTS.BT_ON){
 					if(BT.isEnabled()){
 						Toast.makeText(getApplicationContext(), "SI", Toast.LENGTH_SHORT).show();
 					}else{
