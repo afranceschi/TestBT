@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.WindowDecorActionBar.TabImpl;
 import android.widget.Toast;
-
+//perro
 public class ConexionBT{
 	
 	private Context CONTEXT;
