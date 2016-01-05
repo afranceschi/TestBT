@@ -27,7 +27,7 @@ public class ConexionBT extends Thread{
 	}
 	
 	public void OnBluetooth(){
-		/*new PantallaEspera(CONTEXT,"Bluetooth","Activando Bluetooth",new MetodosPantalla() {
+		new PantallaEspera(CONTEXT,"Bluetooth","Activando Bluetooth",new MetodosPantalla() {
 			
 			@Override
 			public void Run() {
@@ -44,24 +44,7 @@ public class ConexionBT extends Thread{
 			public void Post() {
 				Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
 			}
-		}).Start();*/
-		
-		ProgressDialog aa = new ProgressDialog(CONTEXT);
-		aa.setTitle("AA");
-		aa.setMessage("BB");
-		aa.show();
-		
-		BTADAPTER.enable();
-		
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		aa.dismiss();
-		
+		}).Start();
 	}
 	
 	public void OffBluetooth(){
