@@ -53,7 +53,20 @@ public class ConexionBT{
 	}
 	
 	public void OffBluetooth(){
-		BTADAPTER.disable();
+		new PantallaEspera(CONTEXT,"Bluetooth","Activando Bluetooth",new MetodosPantalla() {
+			
+			@Override
+			public void Run() {
+				BTADAPTER.disable();
+				while(BTADAPTER.isEnabled());
+			}
+			
+			@Override
+			public void Post() {
+				Toast.makeText(CONTEXT, "BLUETOOTH DESACTIVADO", Toast.LENGTH_LONG).show();
+				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,!BTADAPTER.isEnabled());
+			}
+		}).Start();
 	}
 	
 	public boolean isEnabled(){
