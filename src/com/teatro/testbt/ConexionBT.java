@@ -12,18 +12,27 @@ import android.os.Message;
 import android.support.v7.app.WindowDecorActionBar.TabImpl;
 import android.widget.Toast;
 
-public class ConexionBT extends Thread{
+public class ConexionBT{
 
+	//EVENTOS BLUETOOTH
+	public static final int BT_ON = 1;
+	public static final int BT_OFF = 2;
+	
 	private Context CONTEXT;
 	private BluetoothAdapter BTADAPTER;
+	private ConexionBT_EVENTS EVENTOS;
 	
 	public ConexionBT(Context Act){
 		CONTEXT = Act;
 		BTADAPTER = BluetoothAdapter.getDefaultAdapter();
 		
-		if(BTADAPTER != null){
+		/*if(BTADAPTER != null){
 			this.OnBluetooth();
-		}
+		}*/
+	}
+	
+	public void SetBluetoothEvent(ConexionBT_EVENTS event){
+		EVENTOS = event;
 	}
 	
 	public void OnBluetooth(){
@@ -43,8 +52,10 @@ public class ConexionBT extends Thread{
 			@Override
 			public void Post() {
 				Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
+				EVENTOS.BT_EVENT(ConexionBT.BT_ON);
 			}
 		}).Start();
+	
 	}
 	
 	public void OffBluetooth(){

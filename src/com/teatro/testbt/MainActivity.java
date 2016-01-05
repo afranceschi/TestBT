@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 
 @SuppressWarnings("deprecation")
@@ -14,6 +16,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 	}
 
 	@Override
@@ -36,13 +39,24 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	public void AccionBTN(View view){
-		String a = "NO";
-		ConexionBT BT = new ConexionBT(this);
+		final ConexionBT BT = new ConexionBT(this);
+		BT.SetBluetoothEvent(new ConexionBT_EVENTS() {
+			
+			@Override
+			public void BT_EVENT(int event) {
+				// TODO Auto-generated method stub
+				if(event == ConexionBT.BT_ON){
+					if(BT.isEnabled()){
+						Toast.makeText(getApplicationContext(), "SI", Toast.LENGTH_SHORT).show();
+					}else{
+						Toast.makeText(getApplicationContext(), "NO", Toast.LENGTH_SHORT).show();
+					}
+			
+				}
+			}
+		});
 		
-		//BT.OffBluetooth();
-		if(BT.isEnabled()){
-			a = "SI";
-		}
-		Toast.makeText(this, a, Toast.LENGTH_SHORT).show();
+		
+		BT.OnBluetooth();
 	}
 }
