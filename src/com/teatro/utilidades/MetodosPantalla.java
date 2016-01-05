@@ -1,4 +1,4 @@
-package com.teatro.testbt;
+package com.teatro.utilidades;
 
 public interface MetodosPantalla {
 

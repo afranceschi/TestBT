@@ -1,6 +1,10 @@
 package com.teatro.testbt;
 
 import android.support.v7.app.ActionBarActivity;
+
+import com.teatro.bluetooth.ConexionBT;
+import com.teatro.bluetooth.ConexionBT_EVENTS;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;

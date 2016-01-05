@@ -1,6 +1,9 @@
-package com.teatro.testbt;
+package com.teatro.bluetooth;
 
 import java.util.concurrent.ExecutionException;
+
+import com.teatro.utilidades.MetodosPantalla;
+import com.teatro.utilidades.PantallaEspera;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

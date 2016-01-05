@@ -1,10 +1,10 @@
-package com.teatro.testbt;
+package com.teatro.utilidades;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-class PantallaEspera extends AsyncTask<Void, Void, Void>{
+public class PantallaEspera extends AsyncTask<Void, Void, Void>{
 	
 	private MetodosPantalla MEP;
 	private ProgressDialog PD;
