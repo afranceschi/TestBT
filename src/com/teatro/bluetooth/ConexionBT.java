@@ -53,7 +53,7 @@ public class ConexionBT{
 	}
 	
 	public void OffBluetooth(){
-		new PantallaEspera(CONTEXT,"Bluetooth","Activando Bluetooth",new MetodosPantalla() {
+		new PantallaEspera(CONTEXT,"Bluetooth","Desactivando Bluetooth",new MetodosPantalla() {
 			
 			@Override
 			public void Run() {
