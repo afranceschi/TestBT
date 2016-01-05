@@ -44,12 +44,7 @@ public class ConexionBT{
 			@Override
 			public void Run() {
 				BTADAPTER.enable();
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				while(!BTADAPTER.isEnabled());
 			}
 			
 			@Override
