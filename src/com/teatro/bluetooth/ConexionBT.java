@@ -1,9 +1,13 @@
 package com.teatro.bluetooth;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import com.teatro.utilidades.MetodosPantalla;
 import com.teatro.utilidades.PantallaEspera;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +19,11 @@ public class ConexionBT{
 	private Context CONTEXT;
 	private BluetoothAdapter BTADAPTER;
 	private ConexionBT_EVENTS EVENTOS;
+	
+	
+	////
+	private static BluetoothSocket BTSOCKET;
+	
 	
 	public ConexionBT(Context context){
 		CONTEXT = context;
@@ -66,7 +75,21 @@ public class ConexionBT{
 		}).Start();
 	}
 	
-	
+	public void enviarBuffer(byte[] buffer)
+	{
+		OutputStream out;
+		try {
+			out = BTSOCKET.getOutputStream();
+			out.write(buffer);
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 	
 	public boolean isEnabled(){
 		return BTADAPTER.isEnabled();
