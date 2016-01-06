@@ -200,6 +200,10 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 						break;
 					case BluetoothAdapter.STATE_DISCONNECTED:
 						Toast.makeText(context, "Reconectando...",Toast.LENGTH_LONG).show();
+						if(!isEnabled())
+						{
+							OnBluetooth();
+						}
 						ObtenerDsipositivo();
 						ConectarDispositivo();
 						
