@@ -2,11 +2,14 @@ package com.teatro.bluetooth;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
+import java.util.UUID;
 
 import com.teatro.utilidades.MetodosPantalla;
 import com.teatro.utilidades.PantallaEspera;
-
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,6 +26,10 @@ public class ConexionBT{
 	
 	////
 	private static BluetoothSocket BTSOCKET;
+	private BluetoothDevice BTDEVICE;
+	private String DEVNAME="Agus87BT";
+	//private String DEVNAME;
+	private static final UUID my_uuid=UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 	
 	
 	public ConexionBT(Context context){
@@ -58,6 +65,66 @@ public class ConexionBT{
 	
 	}
 	
+	public void ObtenerDsipositivo(){
+		
+new PantallaEspera(CONTEXT,"Bluetooth","Obteniendo dispositivo Bluetooth",new MetodosPantalla() {
+			
+			@Override
+			public void Run() {
+				BTDEVICE = null;
+				Set <BluetoothDevice> AL;
+				
+				AL = BTADAPTER.getBondedDevices();
+				
+				if(AL.size() > 0){
+					for(BluetoothDevice device : AL){
+						if(device.getName().equals(DEVNAME)) BTDEVICE = device;
+					}
+				}
+				while(BTDEVICE == null);
+			}
+			
+			@Override
+			public void Post() {
+				Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH ENCONTRADO", Toast.LENGTH_LONG).show();
+				//EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
+			}
+		}).Start();
+				
+	}
+	
+	
+	@SuppressLint("NewApi")
+	public void ConectarDispositivo() {
+		
+new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositivo Bluetooth",new MetodosPantalla() {
+			
+			@Override
+			public void Run() {
+				try {
+					
+					BTSOCKET= BTDEVICE.createRfcommSocketToServiceRecord(my_uuid);					
+					BTSOCKET.connect();
+					
+				//	BTSOCKET.IS
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				while(!BTSOCKET.isConnected());
+			}
+			
+			@Override
+			public void Post() {
+				Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH CONECTADO", Toast.LENGTH_LONG).show();
+				//EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
+			}
+		}).Start();
+		
+		
+		
+	}
 	public void OffBluetooth(){
 		new PantallaEspera(CONTEXT,"Bluetooth","Desactivando Bluetooth",new MetodosPantalla() {
 			
@@ -111,6 +178,11 @@ public class ConexionBT{
 				
 				case BluetoothAdapter.STATE_ON:
 					Toast.makeText(context, "Activado",Toast.LENGTH_LONG).show();
+					//Aca lo que haria es emparejar el dispositivo
+					ObtenerDsipositivo();
+					ConectarDispositivo();
+					
+					
 					
 					break;
 				case BluetoothAdapter.STATE_OFF:
@@ -134,6 +206,8 @@ public class ConexionBT{
 				}
 			}
 		}
+
+		
 	}
 	
 }
