@@ -66,6 +66,8 @@ public class ConexionBT{
 		}).Start();
 	}
 	
+	
+	
 	public boolean isEnabled(){
 		return BTADAPTER.isEnabled();
 	}
@@ -86,6 +88,7 @@ public class ConexionBT{
 				
 				case BluetoothAdapter.STATE_ON:
 					Toast.makeText(context, "Activado",Toast.LENGTH_LONG).show();
+					
 					break;
 				case BluetoothAdapter.STATE_OFF:
 					Toast.makeText(context, "Desactivado",Toast.LENGTH_LONG).show();
