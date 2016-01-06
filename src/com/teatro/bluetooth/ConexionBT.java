@@ -178,7 +178,7 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 				
 				case BluetoothAdapter.STATE_ON:
 					Toast.makeText(context, "Activado",Toast.LENGTH_LONG).show();
-					//Aca lo que haria es emparejar el dispositivo
+					
 					ObtenerDsipositivo();
 					ConectarDispositivo();
 					
@@ -199,6 +199,9 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 						
 						break;
 					case BluetoothAdapter.STATE_DISCONNECTED:
+						Toast.makeText(context, "Reconectando...",Toast.LENGTH_LONG).show();
+						ObtenerDsipositivo();
+						ConectarDispositivo();
 						
 						break;
 					case BluetoothAdapter.STATE_DISCONNECTING:
