@@ -1,33 +1,30 @@
 package com.teatro.bluetooth;
 
-import java.util.concurrent.ExecutionException;
-
 import com.teatro.utilidades.MetodosPantalla;
 import com.teatro.utilidades.PantallaEspera;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.WindowDecorActionBar.TabImpl;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.widget.Toast;
-//perro
+
 public class ConexionBT{
 	
 	private Context CONTEXT;
 	private BluetoothAdapter BTADAPTER;
 	private ConexionBT_EVENTS EVENTOS;
 	
-	public ConexionBT(Context Act){
-		CONTEXT = Act;
+	public ConexionBT(Context context){
+		CONTEXT = context;
 		BTADAPTER = BluetoothAdapter.getDefaultAdapter();
 		
-		/*if(BTADAPTER != null){
-			this.OnBluetooth();
-		}*/
+		IntentFilter filtro = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+		filtro.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+	 
+	    CONTEXT.registerReceiver(new BluetoothListener(), filtro);
+	    
 	}
 	
 	public void SetBluetoothEvent(ConexionBT_EVENTS event){
@@ -71,6 +68,46 @@ public class ConexionBT{
 	
 	public boolean isEnabled(){
 		return BTADAPTER.isEnabled();
+	}
+	
+	private class BluetoothListener extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			
+			String Accion = intent.getAction();
+			int estado = 0;
+			
+			if(Accion == BluetoothAdapter.ACTION_STATE_CHANGED){
+				estado = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR); 
+				
+				switch(estado){
+				
+				case BluetoothAdapter.STATE_ON:
+					Toast.makeText(context, "Activado",Toast.LENGTH_LONG).show();
+					break;
+				case BluetoothAdapter.STATE_OFF:
+					Toast.makeText(context, "Desactivado",Toast.LENGTH_LONG).show();
+				}
+			}else if(Accion == BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED){
+				estado = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.ERROR);
+				
+				switch(estado){
+					case BluetoothAdapter.STATE_CONNECTED:
+						
+						break;
+					case BluetoothAdapter.STATE_CONNECTING:
+						
+						break;
+					case BluetoothAdapter.STATE_DISCONNECTED:
+						
+						break;
+					case BluetoothAdapter.STATE_DISCONNECTING:
+						
+				}
+			}
+		}
 	}
 	
 }
