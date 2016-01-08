@@ -89,11 +89,6 @@ public class Comando implements Serializable {
 		this.numero = (byte)nmotor;
 	}
 
-
-
-	public void setContext(Context cONTEXTO) {
-	}
-
 	public void enviaComando(OutputStream out) {
 		// TODO Auto-generated method stub
 		
