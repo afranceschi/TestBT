@@ -27,10 +27,11 @@ public class ConexionBT{
 	////
 	private static BluetoothSocket BTSOCKET;
 	private BluetoothDevice BTDEVICE;
-	private String DEVNAME="TEATRO";
+	private static final String DEVNAME="TEATRO";
 	//private String DEVNAME;
 	private static final UUID my_uuid=UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 	private IntentFilter filtro;
+	private BluetoothListener BluetoothReceiver;
 	
 	public ConexionBT(Context context){
 		CONTEXT = context;
@@ -42,8 +43,21 @@ public class ConexionBT{
 		filtro.addAction(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED);
 		filtro.addAction(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED);
 	 
-	    CONTEXT.registerReceiver(new BluetoothListener(), filtro);
+		BluetoothReceiver = new BluetoothListener();
+		
+		CONTEXT.registerReceiver(BluetoothReceiver, filtro);
+		//
 	    
+	}
+	
+	public void onListener(){
+		Toast.makeText(CONTEXT, "Activar Listener", Toast.LENGTH_SHORT).show();
+		BluetoothReceiver.enable();
+	}
+	
+	public void offListener(){
+		Toast.makeText(CONTEXT, "Desactivar Listener", Toast.LENGTH_SHORT).show();
+		BluetoothReceiver.disable();
 	}
 	
 	public void SetBluetoothEvent(ConexionBT_EVENTS event){
@@ -62,70 +76,84 @@ public class ConexionBT{
 			@Override
 			public void Post() {
 				//Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
+				//onListener();
 				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
+			}
+
+			@Override
+			public void Pre() {
+				// TODO Auto-generated method stub
+				//offListener();
 			}
 		}).Start();
 	
 	}
 	
-	public void ObtenerDsipositivo(){
+	public boolean ObtenerDsipositivo(){
 		
-		new PantallaEspera(CONTEXT,"Bluetooth","Obteniendo dispositivo Bluetooth",new MetodosPantalla() {
-			
-			@Override
-			public void Run() {
-				BTDEVICE = null;
-				Set <BluetoothDevice> AL;
+		BTDEVICE = null;
+		Set <BluetoothDevice> AL;
 				
-				AL = BTADAPTER.getBondedDevices();
+		AL = BTADAPTER.getBondedDevices();
 				
-				if(AL.size() > 0){
-					for(BluetoothDevice device : AL){
-						if(device.getName().equals(DEVNAME)) BTDEVICE = device;
-					}
-				}
-				
-				while(BTDEVICE == null);
-				
-				
-				
+		if(AL.size() > 0){
+			for(BluetoothDevice device : AL){
+				if(device.getName().equals(DEVNAME)) BTDEVICE = device;
 			}
-			
-			@Override
-			public void Post() {
-				//Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH ENCONTRADO", Toast.LENGTH_LONG).show();
-				//EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
-			}
-		}).Start();
-				
+		}
+					
+		if(BTDEVICE != null) return true; else return false;
 	}
 	
 	
 	@SuppressLint("NewApi")
 	public void ConectarDispositivo() {
 		
-new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositivo Bluetooth",new MetodosPantalla() {
+		new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositivo Bluetooth",new MetodosPantalla() {
 			
 			@Override
 			public void Run() {
-				try {
+				int timeout = 0;
+				do{
+					if(!BTADAPTER.isEnabled()){
+						BTADAPTER.enable();
+					}
+					try {
 					
-					BTSOCKET= BTDEVICE.createRfcommSocketToServiceRecord(my_uuid);					
-					BTSOCKET.connect();
+						BTSOCKET= BTDEVICE.createRfcommSocketToServiceRecord(my_uuid);					
+						BTSOCKET.connect();
 					
-				//	BTSOCKET.IS
+						//	BTSOCKET.IS
 					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				while(!BTSOCKET.isConnected());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+					timeout = 0;
+					while(!BTSOCKET.isConnected() && timeout <= 30){
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						timeout++;
+					}
+				}while(!BTSOCKET.isConnected());
 			}
 			
 			@Override
 			public void Post() {
 				//Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH CONECTADO", Toast.LENGTH_LONG).show();
 				//EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
+				onListener();
+			}
+
+			@Override
+			public void Pre() {
+				// TODO Auto-generated method stub
+				offListener();
 			}
 		}).Start();
 		
@@ -143,8 +171,14 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 			
 			@Override
 			public void Post() {
-				Toast.makeText(CONTEXT, "BLUETOOTH DESACTIVADO", Toast.LENGTH_LONG).show();
+				//onListener();
 				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,!BTADAPTER.isEnabled());
+			}
+
+			@Override
+			public void Pre() {
+				// TODO Auto-generated method stub
+				//offListener();
 			}
 		}).Start();
 	}
@@ -176,61 +210,54 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 	
 	private class BluetoothListener extends BroadcastReceiver {
 
+		
+		private boolean FLAG_ENABLE;
+		
+		public BluetoothListener() {
+			// TODO Auto-generated constructor stub
+			super();
+			FLAG_ENABLE = true;
+		}
+		
+		public void enable(){
+			FLAG_ENABLE = true;
+		}
+		
+		public void disable(){
+			FLAG_ENABLE = false;
+		}
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
+			if(FLAG_ENABLE){
+				String Accion = intent.getAction();
+				int estado = 0;
 			
-			String Accion = intent.getAction();
-			Toast.makeText(context, Accion,Toast.LENGTH_LONG).show();
-			
-			BluetoothDevice ddd = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-			
-			if(Accion.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED)){
-				Toast.makeText(context, ddd.getName(),Toast.LENGTH_LONG).show();
-			}
-			int estado = 0;
-			
-			if(Accion == BluetoothAdapter.ACTION_STATE_CHANGED){
-				estado = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR); 
-				
-				switch(estado){
-				
-				case BluetoothAdapter.STATE_ON:
-					Toast.makeText(context, "Activado",Toast.LENGTH_LONG).show();
-					//Connect();
-					break;
-				case BluetoothAdapter.STATE_OFF:
-					Toast.makeText(context, "Desactivado",Toast.LENGTH_LONG).show();
-				}
-			}else if(Accion == BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED){
-				estado = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.ERROR);
-				Toast.makeText(context, "CAZO",Toast.LENGTH_LONG).show();
-				switch(estado){
-					case BluetoothAdapter.STATE_CONNECTED:
-						Toast.makeText(context, "CAZO CONNECTED",Toast.LENGTH_LONG).show();
-						
-						break;
-					case BluetoothAdapter.STATE_CONNECTING:
-						Toast.makeText(context, "CAZO CONNECTING",Toast.LENGTH_LONG).show();
-						break;
-					case BluetoothAdapter.STATE_DISCONNECTED:
-						Toast.makeText(context, "CAZO DISCONNECTED",Toast.LENGTH_LONG).show();
-						if(!isEnabled())
-						{
+				if(Accion.equals(BluetoothAdapter.ACTION_STATE_CHANGED)){
+					estado = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,BluetoothAdapter.ERROR);
+					switch(estado){
+						case BluetoothAdapter.STATE_ON:
+							Connect();
+							break;
+						case BluetoothAdapter.STATE_OFF:
 							OnBluetooth();
-						}
-						ObtenerDsipositivo();
-						ConectarDispositivo();
-						
-						break;
-					case BluetoothAdapter.STATE_DISCONNECTING:
-						Toast.makeText(context, "CAZO DISCONNECTING",Toast.LENGTH_LONG).show();
-						
+					}
+				}
+			
+				if(Accion.equals(BluetoothDevice.ACTION_ACL_CONNECTED)){
+					BluetoothDevice BD = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+					if(BD.getName().equals(DEVNAME)){
+					
+					}
+				}else if(Accion.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)){
+					BluetoothDevice BD = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+					if(BD.getName().equals(DEVNAME)){
+						if(isEnabled()) Connect();
+					}
 				}
 			}
 		}
-
-		
 	}
 	
 }

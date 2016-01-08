@@ -14,6 +14,8 @@ public class PantallaEspera extends AsyncTask<Void, Void, Void>{
 		PD = new ProgressDialog(context);
 		PD.setTitle(title);
 		PD.setMessage(msg);
+		PD.setCancelable(false);
+		MEP.Pre();
 	};
 	
 	public void Start(){
