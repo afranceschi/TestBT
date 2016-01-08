@@ -51,9 +51,9 @@ public class MainActivity extends ActionBarActivity {
 				// TODO Auto-generated method stub
 				if(event == ConexionBT_EVENTS.BT_ON){
 					if(respuesta){
-						Toast.makeText(getApplicationContext(), "SI", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getApplicationContext(), "SI", Toast.LENGTH_SHORT).show();
 					}else{
-						Toast.makeText(getApplicationContext(), "NO", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(getApplicationContext(), "NO", Toast.LENGTH_SHORT).show();
 					}
 			
 				}
@@ -61,6 +61,10 @@ public class MainActivity extends ActionBarActivity {
 		});
 		
 		
-		BT.OnBluetooth();
+		if(!BT.isEnabled()){
+			BT.OnBluetooth();
+		}else{
+			BT.Connect();
+		}
 	}
 }

@@ -27,17 +27,20 @@ public class ConexionBT{
 	////
 	private static BluetoothSocket BTSOCKET;
 	private BluetoothDevice BTDEVICE;
-	private String DEVNAME="Agus87BT";
+	private String DEVNAME="TEATRO";
 	//private String DEVNAME;
 	private static final UUID my_uuid=UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-	
+	private IntentFilter filtro;
 	
 	public ConexionBT(Context context){
 		CONTEXT = context;
 		BTADAPTER = BluetoothAdapter.getDefaultAdapter();
 		
-		IntentFilter filtro = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-		filtro.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+		filtro = new IntentFilter();
+		
+		filtro.addAction(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
+		filtro.addAction(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED);
+		filtro.addAction(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED);
 	 
 	    CONTEXT.registerReceiver(new BluetoothListener(), filtro);
 	    
@@ -58,7 +61,7 @@ public class ConexionBT{
 			
 			@Override
 			public void Post() {
-				Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
+				//Toast.makeText(CONTEXT, "BLUETOOTH ACTIVADO", Toast.LENGTH_LONG).show();
 				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
 			}
 		}).Start();
@@ -67,7 +70,7 @@ public class ConexionBT{
 	
 	public void ObtenerDsipositivo(){
 		
-new PantallaEspera(CONTEXT,"Bluetooth","Obteniendo dispositivo Bluetooth",new MetodosPantalla() {
+		new PantallaEspera(CONTEXT,"Bluetooth","Obteniendo dispositivo Bluetooth",new MetodosPantalla() {
 			
 			@Override
 			public void Run() {
@@ -81,12 +84,16 @@ new PantallaEspera(CONTEXT,"Bluetooth","Obteniendo dispositivo Bluetooth",new Me
 						if(device.getName().equals(DEVNAME)) BTDEVICE = device;
 					}
 				}
+				
 				while(BTDEVICE == null);
+				
+				
+				
 			}
 			
 			@Override
 			public void Post() {
-				Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH ENCONTRADO", Toast.LENGTH_LONG).show();
+				//Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH ENCONTRADO", Toast.LENGTH_LONG).show();
 				//EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
 			}
 		}).Start();
@@ -117,7 +124,7 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 			
 			@Override
 			public void Post() {
-				Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH CONECTADO", Toast.LENGTH_LONG).show();
+				//Toast.makeText(CONTEXT, "DISPOSITIVO BLUETOOTH CONECTADO", Toast.LENGTH_LONG).show();
 				//EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,BTADAPTER.isEnabled());
 			}
 		}).Start();
@@ -140,6 +147,11 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 				EVENTOS.BT_EVENT(ConexionBT_EVENTS.BT_ON,!BTADAPTER.isEnabled());
 			}
 		}).Start();
+	}
+	
+	public void Connect(){
+		ObtenerDsipositivo();
+		ConectarDispositivo();
 	}
 	
 	public void enviarBuffer(byte[] buffer)
@@ -169,6 +181,13 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 			// TODO Auto-generated method stub
 			
 			String Accion = intent.getAction();
+			Toast.makeText(context, Accion,Toast.LENGTH_LONG).show();
+			
+			BluetoothDevice ddd = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+			
+			if(Accion.equals(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED)){
+				Toast.makeText(context, ddd.getName(),Toast.LENGTH_LONG).show();
+			}
 			int estado = 0;
 			
 			if(Accion == BluetoothAdapter.ACTION_STATE_CHANGED){
@@ -178,28 +197,24 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 				
 				case BluetoothAdapter.STATE_ON:
 					Toast.makeText(context, "Activado",Toast.LENGTH_LONG).show();
-					
-					ObtenerDsipositivo();
-					ConectarDispositivo();
-					
-					
-					
+					//Connect();
 					break;
 				case BluetoothAdapter.STATE_OFF:
 					Toast.makeText(context, "Desactivado",Toast.LENGTH_LONG).show();
 				}
 			}else if(Accion == BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED){
 				estado = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.ERROR);
-				
+				Toast.makeText(context, "CAZO",Toast.LENGTH_LONG).show();
 				switch(estado){
 					case BluetoothAdapter.STATE_CONNECTED:
+						Toast.makeText(context, "CAZO CONNECTED",Toast.LENGTH_LONG).show();
 						
 						break;
 					case BluetoothAdapter.STATE_CONNECTING:
-						
+						Toast.makeText(context, "CAZO CONNECTING",Toast.LENGTH_LONG).show();
 						break;
 					case BluetoothAdapter.STATE_DISCONNECTED:
-						Toast.makeText(context, "Reconectando...",Toast.LENGTH_LONG).show();
+						Toast.makeText(context, "CAZO DISCONNECTED",Toast.LENGTH_LONG).show();
 						if(!isEnabled())
 						{
 							OnBluetooth();
@@ -209,6 +224,7 @@ new PantallaEspera(CONTEXT,"Bluetooth","Estableciendo conexion con el dispositiv
 						
 						break;
 					case BluetoothAdapter.STATE_DISCONNECTING:
+						Toast.makeText(context, "CAZO DISCONNECTING",Toast.LENGTH_LONG).show();
 						
 				}
 			}

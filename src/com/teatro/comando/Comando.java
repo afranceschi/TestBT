@@ -110,7 +110,6 @@ public class Comando implements Serializable {
 		
 			
 			byte[] buffer;
-			
 			buffer = new byte[8];
 			
 			buffer[0]=comandoid;
