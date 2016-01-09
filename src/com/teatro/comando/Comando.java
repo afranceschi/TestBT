@@ -91,7 +91,7 @@ public class Comando{
 		
 		return r;
 	}
-	
+	//
 	private byte[] Int_To_ByteArray(int num){
 		
 		byte[] r = new byte[4];
