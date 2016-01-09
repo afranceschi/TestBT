@@ -7,89 +7,107 @@ import java.io.Serializable;
 import android.content.Context;
 import android.widget.Toast;
 
-public class Comando implements Serializable {
+public class Comando{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private byte comandoid;
-	private byte numero;
-	private byte velocidad;
-	private byte direccion;
-	private int pasos;
+	private static final int T_ARRAY = 14;
+	
+	private byte COMANDO;
+	private byte ID;
+	private int VELOCIDAD;
+	private int PASOS;
+	private int TIEMPO;
 	
 	public Comando()
 	{
-		this.comandoid=0;
-		this.numero=0;
-		this.velocidad=0;
-		this.direccion=0;
-		this.pasos=0;
+		this.COMANDO=0;
+		this.ID=0;
+		this.VELOCIDAD=0;
+		this.PASOS=0;
+		this.TIEMPO=0;
 		
 	}
-	
-	public Comando(byte comandoid,char nmotor,char velocidad, char direccion, int pasos) {
-		
-		this.comandoid = (byte)comandoid;
-		this.velocidad = (byte)velocidad;
-		this.numero=(byte)nmotor;
-		this.direccion = (byte)direccion;
-		this.pasos = pasos;
+
+	public byte getComando() {
+		return COMANDO;
 	}
 
 
-	public byte getComandoid() {
-		return comandoid;
+	public void setComando(byte comando) {
+		this.COMANDO = comando;
 	}
 
 
-	public void setComandoid(char comandoId) {
-		this.comandoid =(byte) comandoId;
+	public int getVelocidad() {
+		return VELOCIDAD;
 	}
 
 
-	public byte getVelocidad() {
-		return  velocidad;
+	public void setVelocidad(byte velociadad) {
+		this.VELOCIDAD = velociadad;
 	}
-
-
-	public void setVelocidad(char velocidad) {
-		this.velocidad = (byte)velocidad;
-	}
-
-
-	public byte getDireccion() {
-		return direccion;
-	}
-
-
-	public void setDireccion(char direccion) {
-		this.direccion = (byte) direccion;
-	}
-
 
 	public int getPasos() {
-		return (int)pasos;
+		return PASOS;
 	}
 
 
 	public void setPasos(int pasos) {
-		
-		
-		this.pasos = pasos;
+		this.PASOS = pasos;
 	}
 	
-	public byte getNumero() {
-		return numero;
+	public byte getID() {
+		return ID;
 	}
 
 
-	public void setNumero(char nmotor) {
-		this.numero = (byte)nmotor;
+	public void setID(byte id) {
+		this.ID = id;
+	}
+	
+	public byte[] getByteArray(){
+		byte[] r = new byte[T_ARRAY];
+		byte[] aux;
+		
+		r[0] = COMANDO;
+		r[1] = ID;
+		
+		aux = Int_To_ByteArray(VELOCIDAD);
+		r[2] = aux[0];
+		r[3] = aux[1];
+		r[4] = aux[2];
+		r[5] = aux[3];
+		
+		aux = Int_To_ByteArray(PASOS);
+		r[6] = aux[0];
+		r[7] = aux[1];
+		r[8] = aux[2];
+		r[9] = aux[3];
+		
+		aux = Int_To_ByteArray(TIEMPO);
+		r[10] = aux[0];
+		r[11] = aux[1];
+		r[12] = aux[2];
+		r[13] = aux[3];
+		
+		return r;
+	}
+	
+	private byte[] Int_To_ByteArray(int num){
+		
+		byte[] r = new byte[4];
+		
+		r[0] = (byte) (num & 0xff);
+		
+		r[1] = (byte) ((num & 0xff00) >> 8);
+		
+		r[2] = (byte) ((num & 0xff0000) >> 16);
+		
+		r[3] = (byte) ((num & 0xff000000) >> 24);
+		
+		return r;
 	}
 
-	public void enviaComando(OutputStream out) {
+	/*public void enviaComando(OutputStream out) {
 		// TODO Auto-generated method stub
 		
 		try {
@@ -138,10 +156,6 @@ public class Comando implements Serializable {
 		
 	}
 
-
-	
-	
-	
-	
+	*/
 
 }
